@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from .models import Status
+from .searializers import StatusSerializers
 
 def fetch(req):
     return Response({
@@ -16,11 +17,11 @@ def create(req):
             color=data['color']
         )
         newStatus.save()
-        return Response({
-            'message': 'Post request successful'
-        })
+        res = StatusSerializers(newStatus)
+        
+        return Response(res.data, status= status.HTTP_200_OK)
     except Exception as err:
-        return Response({'error': str(err)}, status=400)
+        return Response({'error': str(err)}, status=status.HTTP_424_FAILED_DEPENDENCY)
 
 def update(req):
     return Response({
