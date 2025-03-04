@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
 from .models import Status
 
 def fetch(req):
@@ -8,15 +9,18 @@ def fetch(req):
     })
 
 def create(req):
-    data = req.data
-    newStatus = Status(
-        title=data['title'],
-        color=data['color']
-    )
-    newStatus.save()
-    return Response({
-        'message': 'Post request successful'
-    })
+    try:
+        data = req.data
+        newStatus = Status(
+            title=data['title'],
+            color=data['color']
+        )
+        newStatus.save()
+        return Response({
+            'message': 'Post request successful'
+        })
+    except Exception as err:
+        return Response({'error': str(err)}, status=400)
 
 def update(req):
     return Response({
